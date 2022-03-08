@@ -7,28 +7,64 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import BaseView from "../base-view.js";
 import ExportFactory from "../export/export-factory.js";
 import { click } from "../decorators/click.js";
+import Edit from "../components/edit.js";
 export default class Tasks extends BaseView {
-    constructor(el) {
+    constructor(el, state) {
         super(el);
+        this.tasksList = [];
+        this.tasksList = [{ id: "t1", name: "Task1", status: "pending" }, { id: "t2", name: "Task2", status: "completed" }];
+        this.projectId = "";
     }
     //First explain mount and then replace it with decorator
-    // mount(): void {
-    //   (document.querySelectorAll(".export-tasks") as NodeListOf<HTMLElement>).forEach(element=>{
-    //     element.addEventListener("click",(e)=>{
-    //       let type = (e.target as HTMLElement).dataset["type"] as string;
-    //       let exportInstance = ExportFactory.getInstance(type as ExportType);
-    //       exportInstance!.download();
-    //     })
-    //   })     
-    // }
+    mount() {
+        document.querySelectorAll(".mark-complete-task").forEach(element => {
+            element.addEventListener("click", (e) => {
+                let taskid = e.target.dataset["taskid"];
+                this.markTaskCompleted(taskid);
+            });
+        });
+        document.querySelectorAll(".edit-task").forEach(element => {
+            element.addEventListener("click", (e) => {
+                let taskid = e.target.dataset["taskid"];
+                this.showEditTaskScreen(taskid);
+            });
+        });
+    }
     export(type) {
         let exportInstance = ExportFactory.getInstance(type);
         exportInstance.download();
     }
+    // @click("edit-task","taskid")
+    showEditTaskScreen(taskid) {
+        alert("Edit Task " + taskid);
+        let task = this.tasksList.find(t => t.id == taskid);
+        let editItem = new Edit("#modal");
+        editItem.render(task);
+    }
+    // @click("mark-complete-task", "taskid")  
+    // @delayMiliseconds(1000)
+    markTaskCompleted(taskid) {
+        console.log("this", this);
+        this.tasksList.map(t => {
+            if (t.id == taskid) {
+                t.status = "Completed";
+            }
+        });
+        this.render({ projectId: this.projectId });
+    }
+    getTaskListUI(tasksList) {
+        return tasksList.map(t => {
+            return `<li>${t.name} - ${t.status} <button class="edit-task" data-taskid="${t.id}">Edit</button>  <button class="mark-complete-task" data-taskid="${t.id}">Mark Completed</button></li>`;
+        });
+    }
     render(data) {
+        this.projectId = data.projectId;
         let h = `<div>Task List- ${data.projectId}
             <button class="export-tasks" data-type="pdf">Export PDF</button>
             <button class="export-tasks" data-type="csv">Export CSV</button>
+            <ul>
+              ${this.getTaskListUI(this.tasksList).join("")}
+            </ul>
           </div> `;
         this.show(h);
     }

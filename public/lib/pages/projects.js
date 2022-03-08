@@ -8,8 +8,18 @@ import BaseView from "../base-view.js";
 import Tasks from "./tasks.js";
 import { click } from "../decorators/click.js";
 export default class Projects extends BaseView {
-    constructor(el) {
-        super(el);
+    constructor(el, state) {
+        super(el, state);
+        console.log("store", state.store);
+        this.data = state.store.projects;
+        //   state.on("changecounter",function(val:any){
+        //     console.log("changeCounter",val)
+        //  })
+        //  state.emit("changecounter",function(){
+        //    console.log(state);
+        //    state.store.count++;
+        //    return state.store;
+        //  });
     }
     // mount():void{
     //   (document.querySelectorAll(".button-show-task") as NodeListOf<HTMLElement>).forEach(element=>{
@@ -21,12 +31,17 @@ export default class Projects extends BaseView {
     // }
     showtasks(projectId) {
         alert(projectId);
+        // store.emit("changeProject",function(){
+        //   console.log(store);
+        //   store.store.projects[0].name="Post";
+        //   return store.store;
+        // });
         let tasks = new Tasks("#content");
         tasks.render({ projectId: projectId });
     }
     render() {
-        const projectList = [{ id: 1, name: "Ecommerce" }, { id: 2, name: "Blog" }];
-        let h = projectList.map(p => {
+        // const projectList:Project[] = [{id:1,name:"Ecommerce"},{id:2,name:"Blog"}];
+        let h = this.data.map(p => {
             return `<div>
                   <div>${p.id} - ${p.name}</div>
                   <button class="button-show-task" data-pid="${p.id}">Show Tasks</button>

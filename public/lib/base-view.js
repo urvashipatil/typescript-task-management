@@ -1,5 +1,5 @@
 export default class BaseView {
-    constructor(el) {
+    constructor(el, state) {
         this.el = el;
     }
     mount() {

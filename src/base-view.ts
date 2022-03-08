@@ -1,5 +1,7 @@
+import Kel from "./store/kel.js";
+
 export default abstract class BaseView<T={}>{ 
-  constructor(public el:any) {       
+  constructor(public el:any,state?: Kel) {       
   }
 
   // abstract render():void

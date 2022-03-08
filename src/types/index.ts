@@ -7,6 +7,12 @@ export type TaskData={
   projectId: string
 }
 
+export type Task={
+  id: string,
+  name:string,
+  status: string
+}
+
 export interface Export{
   // geturl(): string;
 
